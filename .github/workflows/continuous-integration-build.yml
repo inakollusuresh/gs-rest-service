@@ -69,3 +69,13 @@ jobs:
           OUTPUT2: ${{needs.build.outputs.output2}}
         run: echo "$OUTPUT1 $OUTPUT2"
 
+      - id: test-github-script
+        name: tets github-script
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GHCR_TOKEN }}
+          script: |
+            console.log(context)
+            console.log(context.repo.repo)
+            console.log(context.payload)
+
