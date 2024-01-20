@@ -2,26 +2,40 @@ name: CI Build
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths-ignore: [ '.gitignore', '*.md', 'spec/**', '*.config' ]
+
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+    paths-ignore: [ '.gitignore', '*.md', 'spec/**', '*.config' ]
+
   workflow_dispatch:
     inputs:
       input1:
         description: Docker image
         required: true
+        type: string
+        default: hello
       input2:
         description: Docker image version
         required: true
+        type: string
+        default: world
 
 jobs:
   build:
     name: Build Main Branch
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test1 }}
+      output2: ${{ steps.step2.outputs.test2 }}
 
     steps:
+      - id: step1
+        run: echo "test1=hello" >> "$GITHUB_OUTPUT"
+      - id: step2
+        run: echo "test2=world" >> "$GITHUB_OUTPUT"
+
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event ."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🐧 This job is now running with  inputs ${{ inputs.input1 }} ${{ inputs.input2 }}"
@@ -45,4 +59,13 @@ jobs:
       - name: Build Complete with Maven
         working-directory: ./complete
         run: ./mvnw --batch-mode clean package
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - env:
+          OUTPUT1: ${{needs.build.outputs.output1}}
+          OUTPUT2: ${{needs.job1.outputs.output2}}
+        run: echo "$OUTPUT1 $OUTPUT2"
 
