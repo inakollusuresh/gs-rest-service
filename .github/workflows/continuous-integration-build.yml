@@ -66,6 +66,6 @@ jobs:
     steps:
       - env:
           OUTPUT1: ${{needs.build.outputs.output1}}
-          OUTPUT2: ${{needs.job1.outputs.output2}}
+          OUTPUT2: ${{needs.build.outputs.output2}}
         run: echo "$OUTPUT1 $OUTPUT2"
 
