@@ -7,6 +7,14 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      input1:
+        description: Docker image
+        required: true
+      input2:
+        description: Docker image version
+        required: true
 
 jobs:
   build:
@@ -16,6 +24,7 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event ."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🐧 This job is now running with  inputs ${{ inputs.input1 }} ${{ inputs.input2 }}"
 
       - name: Check out repository code
         uses: actions/checkout@v4
